@@ -1,8 +1,8 @@
 package Examples
 
 import (
-	api_go_sdk "github.com/Checkpoint/api_go_sdk/APIFiles"
 	"fmt"
+	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
@@ -20,9 +20,9 @@ func DupIp() {
 	var pass string
 	fmt.Scanln(&pass)
 
-	args := api_go_sdk.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api_go_sdk.WebContext, api_go_sdk.TimeOut, api_go_sdk.SleepTime)
+	args := api.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime)
 
-	client := api_go_sdk.APIClient(args)
+	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); x == false {
 		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
@@ -91,12 +91,12 @@ func DupIp() {
 	}
 
 	//for every duplicate ip - print hosts with that ip:
-	for _, dup_ip :=  range dupIpSlice {
+	for _, dupIp :=  range dupIpSlice {
 
-		fmt.Println("\nIP Address: " + dup_ip + "")
+		fmt.Println("\nIP Address: " + dupIp + "")
 		fmt.Println("-------------------------------")
 
-		for _, hostData := range objDictionary[dup_ip]{
+		for _, hostData := range objDictionary[dupIp]{
 
 			fmt.Println("host name: " + hostData["name"] + " host uid: " + hostData["uid"])
 			//fmt.Println(hostData[1])

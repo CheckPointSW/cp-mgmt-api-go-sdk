@@ -1,19 +1,19 @@
 package Examples
 
 import (
-	api_go_sdk "github.com/Checkpoint/api_go_sdk/APIFiles"
 	"fmt"
+	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
-func AddAccess() {
+func AddAccessRule() {
 
-	var api_server string
+	var apiServer string
 	var username string
 	var password string
 
 	fmt.Printf("Enter server IP address or hostname: ")
-	fmt.Scanln(&api_server)
+	fmt.Scanln(&apiServer)
 
 	fmt.Printf("Enter username: ")
 	fmt.Scanln(&username)
@@ -21,12 +21,12 @@ func AddAccess() {
 	fmt.Printf("Enter password: ")
 	fmt.Scanln(&password)
 
-	args := api_go_sdk.APIClientArgs(443, "", "", api_server, "194.29.36.43", 8080, "", false, false, "deb.txt", api_go_sdk.WebContext,api_go_sdk.TimeOut,api_go_sdk.SleepTime)
-	client := api_go_sdk.APIClient(args)
+	args := api.APIClientArgs(443, "", "", apiServer, "194.29.36.43", 8080, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime)
+	client := api.APIClient(args)
 
 	fmt.Printf("Enter the name of the access rule: ")
-	var rule_name string
-	fmt.Scanln(&rule_name)
+	var ruleName string
+	fmt.Scanln(&ruleName)
 
 	if isFingerPrintTrusted, err := client.CheckFingerprint(); isFingerPrintTrusted == false || err != nil {
 
@@ -38,7 +38,7 @@ func AddAccess() {
 		os.Exit(1)
 	}
 
-	login_res, err := client.Login(username, password, false, "", false, "")
+	loginRes, err := client.Login(username, password, false, "", false, "")
 	if err != nil {
 		print("Login error.\n")
 		os.Exit(1)
@@ -46,37 +46,37 @@ func AddAccess() {
 
 
 
-	if login_res.Success == false {
-		print("Login failed:\n" + login_res.ErrorMsg)
+	if loginRes.Success == false {
+		print("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
 	// add a rule to the top of the "Network" layer
 	payload := map[string]interface{}{
-		"name":     rule_name,
+		"name":     ruleName,
 		"layer":    "Network",
 		"position": "top",
 	}
-	add_rule_response, err := client.ApiCall("add-access-rule", payload, client.GetSessionID(), false, true)
+	addRuleResponse, err := client.ApiCall("add-access-rule", payload, client.GetSessionID(), false, true)
 
 	if err != nil {
 		print("error" + err.Error() + "\n")
 	}
 
-	if add_rule_response.Success {
-		print("The rule: " + rule_name + " has been added successfully\n")
+	if addRuleResponse.Success {
+		print("The rule: " + ruleName + " has been added successfully\n")
 
 		// publish the result
 		payload = map[string]interface{}{}
 
-		publish_res, err := client.ApiCall("publish", payload, client.GetSessionID(), false, true)
-		if publish_res.Success {
+		publishRes, err := client.ApiCall("publish", payload, client.GetSessionID(), false, true)
+		if publishRes.Success {
 			print("The changes were published successfully.\n")
 		} else {
 			print("Failed to publish the changes. \n" + err.Error())
 		}
 	} else {
-		print("Failed to add the access-rule: '" + rule_name + "', Error:\n" + add_rule_response.ErrorMsg)
+		print("Failed to add the access-rule: '" + ruleName + "', Error:\n" + addRuleResponse.ErrorMsg)
 	}
 
 }

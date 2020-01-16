@@ -1,8 +1,8 @@
 package Examples
 
 import (
-	api_go_sdk "github.com/Checkpoint/api_go_sdk/APIFiles"
 	"fmt"
+	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
@@ -21,9 +21,9 @@ func DiscardSessions() {
 	fmt.Printf("Enter password: ")
 	fmt.Scanln(&password)
 
-	args := api_go_sdk.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api_go_sdk.WebContext, api_go_sdk.TimeOut, api_go_sdk.SleepTime)
+	args := api.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime)
 
-	client := api_go_sdk.APIClient(args)
+	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); !x {
 		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
@@ -53,7 +53,7 @@ func DiscardSessions() {
 	//payload = map[string]interface{} {}
 	//client.ApiCall("publish", payload, client.GetSessionID(), false, false)
 
-	show_sessions_res, err := client.ApiQuery("show-sessions", "full", "objects", false, map[string]interface{}{})
+	showSessionsRes, err := client.ApiQuery("show-sessions", "full", "objects", false, map[string]interface{}{})
 
 	if err != nil {
 		print("Failed to retrieve the sessions\n")
@@ -68,15 +68,15 @@ func DiscardSessions() {
 	}
 
 	//fmt.Println(show_sessions_res.GetData())
-	var discard_res api_go_sdk.APIResponse
-	for _, sessionObj := range show_sessions_res.GetData() {
+	var discardRes api.APIResponse
+	for _, sessionObj := range showSessionsRes.GetData() {
 		//fmt.Println(sessionObj)
 		if sessionObj.(map[string]interface{})["application"].(string) != "WEB_API" {
 			continue
 		}
-		discard_res, _ = client.ApiCall("discard", map[string]interface{}{"uid": sessionObj.(map[string]interface{})["uid"]}, "", false, false)
+		discardRes, _ = client.ApiCall("discard", map[string]interface{}{"uid": sessionObj.(map[string]interface{})["uid"]}, "", false, false)
 
-		if discard_res.Success {
+		if discardRes.Success {
 			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string)+ " discarded successfully")
 		} else {
 			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string)+ " failed to discard")

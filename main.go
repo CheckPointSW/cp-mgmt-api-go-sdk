@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Checkpoint/api_go_sdk/Examples"
 	"fmt"
+	"github.com/CheckPointSW/cp-mgmt-api-go-sdk/Examples"
 	"os"
 )
 
@@ -12,7 +12,7 @@ func main(){
 	case "discard":
 		Examples.DiscardSessions()
 	case "rule":
-		Examples.AddAccess()
+		Examples.AddAccessRule ()
 	case "add_host":
 		Examples.AddHost()
 	case "show_hosts":

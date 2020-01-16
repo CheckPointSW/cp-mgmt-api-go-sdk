@@ -1,8 +1,8 @@
 package Examples
 
 import (
-	api_go_sdk "github.com/Checkpoint/api_go_sdk/APIFiles"
 	"fmt"
+	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
@@ -11,8 +11,6 @@ func ShowHosts() {
 	var apiServer string
 	var username string
 	var password string
-
-
 
 	fmt.Printf("Enter server IP address or hostname: ")
 	fmt.Scanln(&apiServer)
@@ -23,12 +21,9 @@ func ShowHosts() {
 	fmt.Printf("Enter password: ")
 	fmt.Scanln(&password)
 
+	args := api.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime)
 
-
-
-	args := api_go_sdk.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api_go_sdk.WebContext, api_go_sdk.TimeOut, api_go_sdk.SleepTime)
-
-	client := api_go_sdk.APIClient(args)
+	client := api.APIClient(args)
 
 
 	if x, _ := client.CheckFingerprint(); !x {
@@ -47,17 +42,12 @@ func ShowHosts() {
 		os.Exit(1)
 	}
 
-
-
 	showHostsRes,err2 := client.ApiQuery("show-hosts", "full", "objects", false, map[string]interface{}{})
-
 
 	if err2 != nil {
 		print("Failed to retrieve the hosts\n")
 		return
 	}
-
-
 
 	//fmt.Println(show_sessions_res.GetData())
 	for _,sessionObj := range showHostsRes.GetData(){
