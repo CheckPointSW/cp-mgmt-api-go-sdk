@@ -20,7 +20,7 @@ func DupIp() {
 	var pass string
 	fmt.Scanln(&pass)
 
-	args := api.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime)
+	args := api.APIClientArgs(443, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "")
 
 	client := api.APIClient(args)
 
