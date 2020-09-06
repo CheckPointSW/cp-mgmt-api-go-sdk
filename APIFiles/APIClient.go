@@ -628,11 +628,19 @@ func (c *ApiClient) waitForTasks(taskObjects []interface{}) APIResponse {
 		fmt.Println("Problem showing tasks, try again")
 
 	}
-	var task map[string]interface{}
-	for _, task = range taskRes.GetData()["tasks"].([]map[string]interface{}) {
-		if task["status"].(string) == "failed" || task["status"] == "partially succeeded" {
-			taskRes.Success = false
-			break
+
+	if taskRes.Success {
+		if v, ok := taskRes.GetData()["tasks"]; ok {
+			tasks := v.([]interface{})
+			if len(tasks) > 0 {
+				for _, task := range tasks {
+					status := task.(map[string]interface{})["status"].(string)
+					if status == "failed" || status == "partially succeeded" {
+						taskRes.Success = false
+						break
+					}
+				}
+			}
 		}
 	}
 
