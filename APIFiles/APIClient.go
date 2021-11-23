@@ -5,7 +5,7 @@ version 1.0
 A library for communicating with Check Point's management server using Golang
 written by: Check Point software technologies inc.
 June 2019
-tested with Check Point R80.20 (tested with take hero2 198)
+tested with Check Point R81.20
 
 -----------------------------------------------------------------------------
 
@@ -190,6 +190,30 @@ func (c *ApiClient) Login(username string, password string, continueLastSession 
 		"user":     username,
 		"password": password,
 	}
+	return c.commonLoginLogic(credentials, continueLastSession, domain, readOnly, payload)
+}
+
+/*
+performs a 'login' API call to the management server
+
+api_key: Check Point api-key
+continue_last_session: [optional] It is possible to continue the last Check Point session
+or to create a new one
+domain: [optional] The name, UID or IP-Address of the domain to login.
+read_only: [optional] Login with Read Only permissions. This parameter is not considered in case
+continue-last-session is true.
+payload: [optional] More settings for the login command
+returns: APIResponse object
+side-effects: updates the class's uid and server variables
+*/
+func (c *ApiClient) LoginWithApiKey(apiKey string, continueLastSession bool, domain string, readOnly bool, payload string) (APIResponse, error) {
+	credentials := map[string]interface{}{
+		"api-key": apiKey,
+	}
+	return c.commonLoginLogic(credentials, continueLastSession, domain, readOnly, payload)
+}
+
+func (c *ApiClient) commonLoginLogic(credentials map[string]interface{}, continueLastSession bool, domain string, readOnly bool, payload string) (APIResponse, error) {
 
 	if c.context == WebContext {
 		credentials["continue-last-session"] = continueLastSession
