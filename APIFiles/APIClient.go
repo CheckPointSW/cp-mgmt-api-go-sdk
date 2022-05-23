@@ -241,8 +241,10 @@ func (c *ApiClient) commonLoginLogic(credentials map[string]interface{}, continu
 		credentials["domain"] = domain
 	}
 
-	for k, v := range payload {
-		credentials[k] = v
+	if payload != nil {
+		for k, v := range payload {
+			credentials[k] = v
+		}
 	}
 
 	loginRes, errCall := c.ApiCall("login", credentials, "", false, false)
