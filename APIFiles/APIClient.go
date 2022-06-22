@@ -49,6 +49,7 @@ type ApiClient struct {
 	fingerprint             string
 	sid                     string
 	server                  string
+	cloud_path				string	
 	domain                  string
 	proxyHost               string
 	proxyPort               int
@@ -101,6 +102,7 @@ func APIClient(apiCA ApiClientArgs) *ApiClient {
 		fingerprint:             apiCA.Fingerprint,
 		sid:                     apiCA.Sid,
 		server:                  apiCA.Server,
+		cloud_path:				 apiCA.Cloud_path, 		
 		domain:                  "",
 		proxyHost:               apiCA.ProxyHost,
 		proxyPort:               apiCA.ProxyPort,
@@ -126,6 +128,11 @@ func (c *ApiClient) GetPort() int {
 // Returns the context of API client
 func (c *ApiClient) GetContext() string {
 	return c.context
+}
+
+// Returns the Cloud Path of API client
+func (c *ApiClient) GetCloud_path() string {
+	return c.cloud_path
 }
 
 func (c *ApiClient) GetAutoPublish() bool {
@@ -331,8 +338,16 @@ func (c *ApiClient) ApiCall(command string, payload map[string]interface{}, sid 
 		}
 	}
 
+// Update URL string tO include cloud_path
+
 	var url string
-	if c.apiVersion == "" {
+	if c.cloud_path != "" {
+		if c.apiVersion == "" {
+		url = "/" + c.cloud_path + "/" + c.context + "/" + command
+		}else {
+		url = "/" + c.cloud_path + "/" + c.context + "/" + "v" + c.apiVersion + "/" + command
+		}
+	}else if c.apiVersion == "" {
 		url = "/" + c.context + "/" + command
 	} else {
 		url = "/" + c.context + "/" + "v" + c.apiVersion + "/" + command

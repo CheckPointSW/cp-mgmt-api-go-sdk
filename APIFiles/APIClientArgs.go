@@ -8,6 +8,7 @@ type ApiClientArgs struct {
 	Fingerprint             string
 	Sid                     string
 	Server                  string
+	Cloud_path				string
 	HttpDebugLevel          string
 	ProxyHost               string
 	ProxyPort               int
@@ -30,6 +31,7 @@ Port: the port that is being used
 Fingerprint: server's fingerprint
 Sid: session id
 Server: server's ip
+Cloud_path: The additional server path required when using Checkpoint Smart-1 Cloud management
 ProxyHost: proxy's ip
 ProxyPort: proxy port
 ApiVersion: the version of the api
@@ -46,6 +48,7 @@ func APIClientArgs(port int, fingerprint string, sid string, server string, prox
 		Fingerprint: fingerprint,
 		Sid: sid,
 		Server: server,
+		Cloud_path: cloud_path,
 		ProxyHost: proxyHost,
 		ProxyPort: proxyPort,
 		ApiVersion: apiVersion,
