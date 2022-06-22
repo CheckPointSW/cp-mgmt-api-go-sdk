@@ -1,8 +1,8 @@
 package Examples
 
 import (
+	api "../APIFiles"
 	"fmt"
-	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
@@ -20,24 +20,16 @@ func AddHost() {
 	fmt.Printf("Enter password: ")
 	fmt.Scanln(&password)
 
-	args := api.APIClientArgs(443, "", "", apiServer, "194.29.36.43", 8080, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "")
+	args := api.APIClientArgs(api.DefaultPort, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "", "")
 
 	client := api.APIClient(args)
-
-	fmt.Printf("Enter the name of the host: ")
-	var hostName string
-	fmt.Scanln(&hostName)
-
-	fmt.Printf("Enter the ip of the host: ")
-	var hostIp string
-	fmt.Scanln(&hostIp)
 
 	if x, _ := client.CheckFingerprint(); x == false {
 		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		os.Exit(1)
 	}
 
-	loginRes, err := client.Login(username, password, false, "", false, "")
+	loginRes, err := client.Login(username, password,false, "", false, "")
 	if err != nil {
 		print("Login error.\n")
 		os.Exit(1)
@@ -47,7 +39,16 @@ func AddHost() {
 		print("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
-	// add a rule to the top of the "Network" layer
+
+	fmt.Printf("Enter the name of the host: ")
+	var hostName string
+	fmt.Scanln(&hostName)
+
+	fmt.Printf("Enter the ip of the host: ")
+	var hostIp string
+	fmt.Scanln(&hostIp)
+
+	// add host
 	payload := map[string]interface{}{
 		"name":       hostName,
 		"ip-address": hostIp,

@@ -1,8 +1,8 @@
 package Examples
 
 import (
+	api "../APIFiles"
 	"fmt"
-	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
@@ -21,7 +21,7 @@ func AddAccessRule() {
 	fmt.Printf("Enter password: ")
 	fmt.Scanln(&password)
 
-	args := api.APIClientArgs(443, "", "", apiServer, "194.29.36.43", 8080, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "")
+	args := api.APIClientArgs(api.DefaultPort, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "", "")
 	client := api.APIClient(args)
 
 	fmt.Printf("Enter the name of the access rule: ")

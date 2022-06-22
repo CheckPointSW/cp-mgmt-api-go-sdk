@@ -1,8 +1,8 @@
 package main
 
 import (
+	"./Examples"
 	"fmt"
-	"github.com/CheckPointSW/cp-mgmt-api-go-sdk/Examples"
 	"os"
 )
 
