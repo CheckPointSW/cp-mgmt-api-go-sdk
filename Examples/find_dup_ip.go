@@ -1,7 +1,7 @@
 package Examples
 
 import (
-	api "../APIFiles"
+	api "cp-mgmt-api-go-sdk/APIFiles"
 	"fmt"
 	"os"
 )
@@ -20,7 +20,7 @@ func DupIp() {
 	var pass string
 	fmt.Scanln(&pass)
 
-	args := api.APIClientArgs(api.DefaultPort, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "", "")
+	args := api.APIClientArgs(api.DefaultPort, "", "", apiServer, "", -1, "", false, false, "deb.txt", api.WebContext, api.TimeOut, api.SleepTime, "", "", -1)
 
 	client := api.APIClient(args)
 
