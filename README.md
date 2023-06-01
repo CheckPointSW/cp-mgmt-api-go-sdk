@@ -15,6 +15,8 @@ capabilities of the library. The kit is compatible with Golang version 1.12
 
 `find_duplicate_ip` - demonstrates searching for all the hosts that share the same IP address.
 
+`auto_publish` - demonstrates using auto publish feature by running multiple threads that create new network groups.
+
 ## Instructions
 
 The SDK can be imported to an other Go projects:
