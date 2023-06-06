@@ -1,8 +1,8 @@
 package Examples
 
 import (
+	api "cp-mgmt-api-go-sdk/APIFiles"
 	"fmt"
-	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 	"strconv"
 	"time"
