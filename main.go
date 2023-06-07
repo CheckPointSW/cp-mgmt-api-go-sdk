@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cp-mgmt-api-go-sdk/Examples"
+	"./Examples"
 	"fmt"
 	"os"
 )

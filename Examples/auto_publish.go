@@ -1,7 +1,7 @@
 package Examples
 
 import (
-	api "cp-mgmt-api-go-sdk/APIFiles"
+	api "../APIFiles"
 	"fmt"
 	"os"
 	"strconv"
@@ -43,7 +43,7 @@ func AutoPublish() {
 	}
 
 	numOfThreads := 10
-	numOfObjectsToCreate := 100
+	numOfObjectsToCreate := 20
 	threadNamePrefix := "auto-publish-thread"
 
 	fmt.Println("Start auto publish program. Number of threads " + strconv.Itoa(numOfThreads))

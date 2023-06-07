@@ -1,7 +1,7 @@
 package Examples
 
 import (
-	api "cp-mgmt-api-go-sdk/APIFiles"
+	api "../APIFiles"
 	"fmt"
 	"os"
 )
