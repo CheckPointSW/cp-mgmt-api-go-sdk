@@ -328,9 +328,13 @@ func (c *ApiClient) ApiCallSimple(command string, payload map[string]interface{}
 }
 
 func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid string, waitForTask bool, useProxy bool, internal bool, method ...string) (APIResponse, error) {
-	req_method := "POST"
+	reqMethod := "POST"
 	if len(method) > 0 {
-		req_method = method[0]
+		providedMethod := method[0]
+		if !isValidHTTPMethod(providedMethod) {
+			return APIResponse{}, fmt.Errorf("invalid HTTP method: %s", providedMethod)
+		}
+		reqMethod = providedMethod
 	}
 	fp, errFP := getFingerprint(c.server, c.port)
 	if errFP != nil {
@@ -392,7 +396,7 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 
 	spotReader := bytes.NewReader(_data)
 
-	req, err := http.NewRequest(req_method, url, spotReader)
+	req, err := http.NewRequest(reqMethod, url, spotReader)
 	if err != nil {
 		return APIResponse{}, err
 	}
@@ -1027,4 +1031,16 @@ func (c *ApiClient) askYesOrNoQuestion(question string) bool {
 	var answer string
 	_, _ = fmt.Scanln(&answer)
 	return strings.ToLower(answer) == "y" || strings.ToLower(answer) == "yes"
+}
+
+func isValidHTTPMethod(method string) bool {
+	validMethods := []string{
+		"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD",
+	}
+	for _, validMethod := range validMethods {
+		if method == validMethod {
+			return true
+		}
+	}
+	return false
 }
