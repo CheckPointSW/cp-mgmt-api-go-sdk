@@ -1035,7 +1035,7 @@ func (c *ApiClient) askYesOrNoQuestion(question string) bool {
 
 func isValidHTTPMethod(method string) bool {
 	validMethods := []string{
-		"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD",
+		"GET", "POST", "PUT", "DELETE",
 	}
 	for _, validMethod := range validMethods {
 		if method == validMethod {
