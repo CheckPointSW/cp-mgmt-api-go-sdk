@@ -31,17 +31,17 @@ import (
 )
 
 const (
-	InProgress       string        = "in progress"
-	DefaultPort      int           = 443
-	Limit            int           = 50
-	Filename         string        = "fingerprints.json"
-	TimeOut          time.Duration = time.Second * 10
-	SleepTime        time.Duration = time.Second * 2
-	GaiaContext      string        = "gaia_api"
-	WebContext       string        = "web_api"
-	DefaultProxyPort               = -1
-	DefaultProxyHost               = ""
-	AutoPublishBatchSize  int      = 100
+	InProgress           string        = "in progress"
+	DefaultPort          int           = 443
+	Limit                int           = 50
+	Filename             string        = "fingerprints.json"
+	TimeOut              time.Duration = time.Second * 10
+	SleepTime            time.Duration = time.Second * 2
+	GaiaContext          string        = "gaia_api"
+	WebContext           string        = "web_api"
+	DefaultProxyPort                   = -1
+	DefaultProxyHost                   = ""
+	AutoPublishBatchSize int           = 100
 )
 
 // Check Point API Client (Management/GAIA)
@@ -66,15 +66,15 @@ type ApiClient struct {
 	userAgent               string
 	cloudMgmtId             string
 	autoPublishBatchSize    int
-	activeCallsLock		    sync.Mutex
-	autoPublishLock 		sync.Mutex
-	totalCallsLock 		    sync.Mutex
+	activeCallsLock         sync.Mutex
+	autoPublishLock         sync.Mutex
+	totalCallsLock          sync.Mutex
 	duringPublish           bool
-	activeCallsCtr 		    int
-	totalCallsCtr 		    int
+	activeCallsCtr          int
+	totalCallsCtr           int
 }
 
-// Api Client constructor
+// ApiClient constructor
 // Input ApiClientArgs
 // Returns new client instance
 func APIClient(apiCA ApiClientArgs) *ApiClient {
@@ -212,7 +212,7 @@ func (c *ApiClient) DisableAutoPublish() {
 	c.totalCallsCtr = 0
 }
 
-// Deprecated: Do not use.
+// Deprecated: Do not use. Use ApiLogin instead
 func (c *ApiClient) Login(username string, password string, continueLastSession bool, domain string, readOnly bool, payload string) (APIResponse, error) {
 	credentials := map[string]interface{}{
 		"user":     username,
@@ -221,7 +221,7 @@ func (c *ApiClient) Login(username string, password string, continueLastSession 
 	return c.commonLoginLogic(credentials, continueLastSession, domain, readOnly, make(map[string]interface{}))
 }
 
-// Deprecated: Do not use.
+// Deprecated: Do not use. Use ApiLoginWithApiKey instead
 func (c *ApiClient) LoginWithApiKey(apiKey string, continueLastSession bool, domain string, readOnly bool, payload string) (APIResponse, error) {
 	credentials := map[string]interface{}{
 		"api-key": apiKey,
@@ -230,7 +230,7 @@ func (c *ApiClient) LoginWithApiKey(apiKey string, continueLastSession bool, dom
 }
 
 /*
-Performs a 'login' API call to management server
+Performs login API call to the management server using username and password
 
 username: Check Point admin name
 password: Check Point admin password
@@ -251,7 +251,7 @@ func (c *ApiClient) ApiLogin(username string, password string, continueLastSessi
 }
 
 /*
-performs a 'login' API call to the management server
+Performs login API call to the management server using api key
 
 api_key: Check Point api-key
 continue_last_session: [optional] It is possible to continue the last Check Point session
@@ -411,9 +411,9 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 	if !internal && c.autoPublishBatchSize > 0 {
 		waitToRun := true
 		for waitToRun {
-			if c.totalCallsCtr + 1 <= c.autoPublishBatchSize && !c.duringPublish {
+			if c.totalCallsCtr+1 <= c.autoPublishBatchSize && !c.duringPublish {
 				c.totalCallsLock.Lock()
-				if c.totalCallsCtr + 1 <= c.autoPublishBatchSize && !c.duringPublish {
+				if c.totalCallsCtr+1 <= c.autoPublishBatchSize && !c.duringPublish {
 					c.totalCallsCtr++
 					waitToRun = false
 				}
@@ -519,9 +519,9 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 
 	if !internal && c.autoPublishBatchSize > 0 {
 		c.decreaseActiveCalls()
-		if c.totalCallsCtr > 0 && c.totalCallsCtr % c.autoPublishBatchSize == 0 && !c.duringPublish {
+		if c.totalCallsCtr > 0 && c.totalCallsCtr%c.autoPublishBatchSize == 0 && !c.duringPublish {
 			c.autoPublishLock.Lock()
-			if c.totalCallsCtr > 0 && c.totalCallsCtr % c.autoPublishBatchSize == 0 && !c.duringPublish {
+			if c.totalCallsCtr > 0 && c.totalCallsCtr%c.autoPublishBatchSize == 0 && !c.duringPublish {
 				c.duringPublish = true
 				c.autoPublishLock.Unlock()
 				for c.activeCallsCtr > 0 {
@@ -531,16 +531,16 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 				}
 				// Going to publish
 				fmt.Println("Start auto publish...")
-				publishRes, _ := c.apiCall("publish", map[string]interface{}{},c.GetSessionID(),true,c.IsProxyUsed(), true)
+				publishRes, _ := c.apiCall("publish", map[string]interface{}{}, c.GetSessionID(), true, c.IsProxyUsed(), true)
 
 				if !publishRes.Success {
 					fmt.Println("Auto publish failed. Message: " + publishRes.ErrorMsg)
-				}else{
+				} else {
 					fmt.Println("Auto publish finished successfully")
 				}
 				c.totalCallsCtr = 0
 				c.duringPublish = false
-			}else{
+			} else {
 				c.autoPublishLock.Unlock()
 			}
 		}

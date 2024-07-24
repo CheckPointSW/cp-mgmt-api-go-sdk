@@ -29,7 +29,7 @@ func AddHost() {
 		os.Exit(1)
 	}
 
-	loginRes, err := client.Login(username, password,false, "", false, "")
+	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
 		print("Login error.\n")
 		os.Exit(1)
