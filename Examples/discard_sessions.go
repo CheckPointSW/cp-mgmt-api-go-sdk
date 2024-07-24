@@ -30,7 +30,7 @@ func DiscardSessions() {
 		os.Exit(1)
 	}
 
-	loginRes, err := client.Login(username, password, false, "", false, "")
+	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
 		print("Login error.\n")
 		os.Exit(1)
@@ -77,9 +77,9 @@ func DiscardSessions() {
 		discardRes, _ = client.ApiCall("discard", map[string]interface{}{"uid": sessionObj.(map[string]interface{})["uid"]}, "", false, false)
 
 		if discardRes.Success {
-			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string)+ " discarded successfully")
+			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string) + " discarded successfully")
 		} else {
-			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string)+ " failed to discard")
+			fmt.Println("Session " + sessionObj.(map[string]interface{})["uid"].(string) + " failed to discard")
 		}
 	}
 
