@@ -1,14 +1,14 @@
 package main
 
 import (
-	"./Examples"
 	"fmt"
+	"github.com/cp-mgmt-api-go-sdk/Examples"
 	"os"
 )
 
-func main(){
+func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Operation not found. Optional operations are rule/discard/add_host/show_hosts/dup_ip/auto_publish")
+		fmt.Println("cp-mgmt-api-go-sdk main : Operation not found. Optional operations are rule/discard/add_host/show_hosts/dup_ip/auto_publish")
 		os.Exit(0)
 	}
 
@@ -16,7 +16,7 @@ func main(){
 	case "discard":
 		Examples.DiscardSessions()
 	case "rule":
-		Examples.AddAccessRule ()
+		Examples.AddAccessRule()
 	case "add_host":
 		Examples.AddHost()
 	case "show_hosts":

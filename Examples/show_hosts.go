@@ -1,8 +1,8 @@
 package Examples
 
 import (
-	api "../APIFiles"
 	"fmt"
+	api "github.com/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
