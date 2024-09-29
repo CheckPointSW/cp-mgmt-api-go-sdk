@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/cp-mgmt-api-go-sdk/Examples"
+	//"github.com/cp-mgmt-api-go-sdk/Examples"
+	"./Examples"
 	"os"
 )
 
