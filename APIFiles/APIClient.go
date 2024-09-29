@@ -773,11 +773,6 @@ func (c *ApiClient) waitForTask(taskId string) (APIResponse, error) {
 			if taskMap["status"] != nil && taskMap["status"].(string) != InProgress {
 				completedTasks++
 			}
-			/**
-			if task.(map[string]interface{})["status"].(string) != InProgress {
-				completedTasks++
-			}*/
-
 		}
 
 		if completedTasks == totalTasks {
