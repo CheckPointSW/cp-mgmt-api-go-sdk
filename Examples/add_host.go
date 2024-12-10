@@ -2,7 +2,7 @@ package Examples
 
 import (
 	"fmt"
-	api "github.com/cp-mgmt-api-go-sdk/APIFiles"
+	api "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 	"os"
 )
 
