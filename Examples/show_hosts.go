@@ -50,9 +50,10 @@ func ShowHosts() {
 
 	//fmt.Println(show_sessions_res.GetData())
 	for _, sessionObj := range showHostsRes.GetData() {
+		host := sessionObj.(map[string]interface{})
 		fmt.Println("-------------\n--------------")
-		fmt.Println(sessionObj.(map[string]interface{})["name"].(string))
-		fmt.Println(sessionObj.(map[string]interface{})["ipv4-address"].(string))
+		fmt.Println(host["name"].(string))
+		fmt.Println(host["ipv4-address"].(string))
 	}
 
 }
