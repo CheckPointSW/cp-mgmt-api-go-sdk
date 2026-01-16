@@ -26,18 +26,18 @@ func DiscardSessions() {
 	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); !x {
-		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
+		fmt.Printf("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		os.Exit(1)
 	}
 
 	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
-		print("Login error.\n")
+		fmt.Printf("Login error.\n")
 		os.Exit(1)
 	}
 
 	if !loginRes.Success {
-		print("Login failed:\n" + loginRes.ErrorMsg)
+		fmt.Printf("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
@@ -48,7 +48,7 @@ func DiscardSessions() {
 	_, err = client.ApiCall("add-host", payload, client.GetSessionID(), false, false)
 
 	if err != nil {
-		print("error" + err.Error() + "\n")
+		fmt.Printf("error" + err.Error() + "\n")
 	}
 	//payload = map[string]interface{} {}
 	//client.ApiCall("publish", payload, client.GetSessionID(), false, false)
@@ -56,14 +56,14 @@ func DiscardSessions() {
 	showSessionsRes, err := client.ApiQuery("show-sessions", "full", "objects", false, map[string]interface{}{})
 
 	if err != nil {
-		print("Failed to retrieve the sessions\n")
+		fmt.Printf("Failed to retrieve the sessions\n")
 		return
 	}
 
 	_, err2 := client.ApiQuery("show-hosts", "full", "objects", false, map[string]interface{}{})
 
 	if err2 != nil {
-		print("Failed to retrieve the sessions\n")
+		fmt.Printf("Failed to retrieve the sessions\n")
 		return
 	}
 

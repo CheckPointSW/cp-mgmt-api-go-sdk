@@ -22,26 +22,26 @@ type Client struct {
 }
 
 // Init and returns new instance of HTTP client wrapper
-func CreateClient(server string, sid string, timeout time.Duration) (*Client, error) {
-	//sgignore next_line
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+func CreateClient(server string, sid string, timeout time.Duration, skipVerify bool) (*Client, error) {
 	var netClient = &http.Client{
 		Timeout: timeout,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipVerify},
+		},
 	}
 	return &Client{netClient, server, sid, "", ""}, nil
 }
 
 // Init and returns new instance of HTTP proxy client
-func CreateProxyClient(server string, serverProxy string, sid string, portProxy int, timeout time.Duration) (*Client, error) {
+func CreateProxyClient(server string, serverProxy string, sid string, portProxy int, timeout time.Duration, skipVerify bool) (*Client, error) {
 	proxyURL, _ := url.Parse("http://" + serverProxy + ":" + strconv.Itoa(portProxy))
-	http.DefaultTransport = &http.Transport{
-		Proxy:           http.ProxyURL(proxyURL),
-		TLSNextProto:    make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
-		//sgignore next_line
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-	}
 	var netClient = &http.Client{
 		Timeout: timeout,
+		Transport: &http.Transport{
+			Proxy:           http.ProxyURL(proxyURL),
+			TLSNextProto:    make(map[string]func(authority string, c *tls.Conn) http.RoundTripper),
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: skipVerify},
+		},
 	}
 
 	return &Client{netClient, server, sid, "", ""}, nil

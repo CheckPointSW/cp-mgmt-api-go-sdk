@@ -25,18 +25,18 @@ func AddHost() {
 	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); x == false {
-		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
+		fmt.Printf("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		os.Exit(1)
 	}
 
 	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
-		print("Login error.\n")
+		fmt.Printf("Login error.\n")
 		os.Exit(1)
 	}
 
 	if loginRes.Success == false {
-		print("Login failed:\n" + loginRes.ErrorMsg)
+		fmt.Printf("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
@@ -56,23 +56,23 @@ func AddHost() {
 	addHostResponse, err := client.ApiCall("add-host", payload, client.GetSessionID(), false, true)
 
 	if err != nil {
-		print("error" + err.Error() + "\n")
+		fmt.Printf("error" + err.Error() + "\n")
 	}
 
 	if addHostResponse.Success {
-		print("The host: " + hostName + " has been added successfully\n")
+		fmt.Printf("The host: " + hostName + " has been added successfully\n")
 
 		// publish the result
 		payload = map[string]interface{}{}
 
 		publish_res, err := client.ApiCall("publish", payload, client.GetSessionID(), true, true)
 		if publish_res.Success {
-			print("The changes were published successfully.\n")
+			fmt.Printf("The changes were published successfully.\n")
 		} else {
-			print("Failed to publish the changes. \n" + err.Error())
+			fmt.Printf("Failed to publish the changes. \n" + err.Error())
 		}
 	} else {
-		print("Failed to add the host: '" + hostName + "', Error:\n" + addHostResponse.ErrorMsg)
+		fmt.Printf("Failed to add the host: '" + hostName + "', Error:\n" + addHostResponse.ErrorMsg)
 	}
 
 }

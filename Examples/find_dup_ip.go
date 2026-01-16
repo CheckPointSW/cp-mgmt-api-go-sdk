@@ -25,25 +25,25 @@ func DupIp() {
 	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); x == false {
-		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
+		fmt.Printf("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		os.Exit(1)
 	}
 
 	loginRes, err := client.ApiLogin(username, pass, false, "", false, nil)
 	if err != nil {
-		print("Login error.\n")
+		fmt.Printf("Login error.\n")
 		os.Exit(1)
 	}
 
 	if loginRes.Success == false {
-		print("Login failed:\n" + loginRes.ErrorMsg)
+		fmt.Printf("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
 	showHostsRes, err := client.ApiQuery("show-hosts", "full", "objects", false, map[string]interface{}{})
 
 	if err != nil {
-		print("Failed to retrieve the hosts\n")
+		fmt.Printf("Failed to retrieve the hosts\n")
 		return
 	}
 
@@ -56,7 +56,7 @@ func DupIp() {
 	for _, host := range showHostsRes.GetData() {
 		ipaddr := host.(map[string]interface{})["ipv4-address"].(string)
 		if ipaddr == "" {
-			print(host.(map[string]interface{})["name"].(string) + " has no IPv4 address. Skipping...")
+			fmt.Printf(host.(map[string]interface{})["name"].(string) + " has no IPv4 address. Skipping...")
 			continue
 		}
 		hostData := map[string]string{"name": host.(map[string]interface{})["name"].(string), "uid": host.(map[string]interface{})["uid"].(string)}

@@ -33,19 +33,19 @@ func AddAccessRule() {
 		if err != nil {
 			fmt.Println(err.Error())
 		} else {
-			print("Could not get the server's fingerprint - Check connectivity with the server.\n")
+			fmt.Printf("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		}
 		os.Exit(1)
 	}
 
 	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
-		print("Login error.\n")
+		fmt.Printf("Login error.\n")
 		os.Exit(1)
 	}
 
 	if loginRes.Success == false {
-		print("Login failed:\n" + loginRes.ErrorMsg)
+		fmt.Printf("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
@@ -58,23 +58,23 @@ func AddAccessRule() {
 	addRuleResponse, err := client.ApiCall("add-access-rule", payload, client.GetSessionID(), false, true)
 
 	if err != nil {
-		print("error" + err.Error() + "\n")
+		fmt.Printf("error" + err.Error() + "\n")
 	}
 
 	if addRuleResponse.Success {
-		print("The rule: " + ruleName + " has been added successfully\n")
+		fmt.Printf("The rule: " + ruleName + " has been added successfully\n")
 
 		// publish the result
 		payload = map[string]interface{}{}
 
 		publishRes, err := client.ApiCall("publish", payload, client.GetSessionID(), false, true)
 		if publishRes.Success {
-			print("The changes were published successfully.\n")
+			fmt.Printf("The changes were published successfully.\n")
 		} else {
-			print("Failed to publish the changes. \n" + err.Error())
+			fmt.Printf("Failed to publish the changes. \n" + err.Error())
 		}
 	} else {
-		print("Failed to add the access-rule: '" + ruleName + "', Error:\n" + addRuleResponse.ErrorMsg)
+		fmt.Printf("Failed to add the access-rule: '" + ruleName + "', Error:\n" + addRuleResponse.ErrorMsg)
 	}
 
 }

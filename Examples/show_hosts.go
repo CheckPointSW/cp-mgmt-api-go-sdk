@@ -26,25 +26,25 @@ func ShowHosts() {
 	client := api.APIClient(args)
 
 	if x, _ := client.CheckFingerprint(); !x {
-		print("Could not get the server's fingerprint - Check connectivity with the server.\n")
+		fmt.Printf("Could not get the server's fingerprint - Check connectivity with the server.\n")
 		os.Exit(1)
 	}
 
 	loginRes, err := client.ApiLogin(username, password, false, "", false, nil)
 	if err != nil {
-		print("Login error.\n")
+		fmt.Printf("Login error.\n")
 		os.Exit(1)
 	}
 
 	if !loginRes.Success {
-		print("Login failed:\n" + loginRes.ErrorMsg)
+		fmt.Printf("Login failed:\n" + loginRes.ErrorMsg)
 		os.Exit(1)
 	}
 
 	showHostsRes, err2 := client.ApiQuery("show-hosts", "full", "objects", false, map[string]interface{}{})
 
 	if err2 != nil {
-		print("Failed to retrieve the hosts\n")
+		fmt.Printf("Failed to retrieve the hosts\n")
 		return
 	}
 

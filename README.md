@@ -1,8 +1,9 @@
 # cp-mgmt-api-go-sdk
-Check Point API Go Development Kit simplifies the use of the Check Point Management APIs. The kit contains the API library files, and sample files demonstrating the 
-capabilities of the library. The kit is compatible with Golang version 1.12
+
+Check Point API Go Development Kit simplifies the use of the Check Point Management APIs. The kit contains the API library files, and sample files demonstrating the capabilities of the library. The kit is compatible with Golang version 1.12.
 
 ## Content
+
 `APIFiles` - the API library project.
 
 `add_access_rule` - demonstrates a basic flow of using the APIs: performs a login command, adds an access rule to the top of the access policy layer, and publishes the changes.
@@ -19,10 +20,10 @@ capabilities of the library. The kit is compatible with Golang version 1.12
 
 ## Instructions
 
-The SDK can be imported to an other Go projects:
+The SDK can be imported to another Go project:
 
 ```bash
-$ go get -t "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
+go get github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles
 ```
 
 ```go
@@ -33,16 +34,16 @@ import "github.com/CheckPointSW/cp-mgmt-api-go-sdk/APIFiles"
 
 ### Running the examples
 
-Clone repository to: `$GOPATH/src/github.com/CheckPointSW/cp-mgmt-api-go-sdk`
+Clone the repository:
 
 ```sh
-$ git clone git@github.com:CheckPointSW/cp-mgmt-api-go-sdk $GOPATH/src/github.com/CheckPointSW/cp-mgmt-api-go-sdk
+git clone https://github.com/CheckPointSW/cp-mgmt-api-go-sdk.git
+cd cp-mgmt-api-go-sdk
 ```
 
-Enter the sdk directory and build the sdk
+Build and run the project:
 
 ```sh
-$ cd $GOPATH/src/github.com/CheckPointSW/cp-mgmt-api-go-sdk
-$ go build main.go
-$ main.exe <example argument> ["discard"/"rule"/"add_host"/"show_hosts"/"dup_ip"]
+go build main.go
+./main <example argument> ["discard"/"rule"/"add_host"/"show_hosts"/"dup_ip"/"auto_publish"]
 ```

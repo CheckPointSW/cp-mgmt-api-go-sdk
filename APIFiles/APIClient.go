@@ -279,10 +279,8 @@ func (c *ApiClient) commonLoginLogic(credentials map[string]interface{}, continu
 		credentials["domain"] = domain
 	}
 
-	if payload != nil {
-		for k, v := range payload {
-			credentials[k] = v
-		}
+	for k, v := range payload {
+		credentials[k] = v
 	}
 
 	loginRes, errCall := c.apiCall("login", credentials, "", false, c.IsProxyUsed(), true)
@@ -364,12 +362,12 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 
 	var client *Client
 	if useProxy {
-		client, err = CreateProxyClient(c.server, c.proxyHost, sid, c.proxyPort, c.timeout)
+		client, err = CreateProxyClient(c.server, c.proxyHost, sid, c.proxyPort, c.timeout, c.ignoreServerCertificate)
 		if err != nil {
 			return APIResponse{}, err
 		}
 	} else {
-		client, err = CreateClient(c.server, sid, c.timeout)
+		client, err = CreateClient(c.server, sid, c.timeout, c.ignoreServerCertificate)
 		if err != nil {
 			return APIResponse{}, err
 		}
@@ -473,17 +471,15 @@ func (c *ApiClient) apiCall(command string, payload map[string]interface{}, sid 
 				c.autoPublishLock.Unlock()
 				for c.activeCallsCtr > 0 {
 					//	 Waiting for other calls to finish
-					fmt.Println("Waiting to start auto publish (Active calls " + strconv.Itoa(c.activeCallsCtr) + ")")
 					time.Sleep(time.Second)
 				}
 				// Going to publish
-				fmt.Println("Start auto publish...")
 				publishRes, _ := c.apiCall("publish", map[string]interface{}{}, c.GetSessionID(), true, c.IsProxyUsed(), true)
 
 				if !publishRes.Success {
-					fmt.Println("Auto publish failed. Message: " + publishRes.ErrorMsg)
+					fmt.Fprintf(os.Stderr, "Auto publish failed. Message: %s\n", publishRes.ErrorMsg)
 				} else {
-					fmt.Println("Auto publish finished successfully")
+					fmt.Fprintf(os.Stderr, "Auto publish finished successfully\n")
 				}
 				c.totalCallsCtr = 0
 				c.duringPublish = false
@@ -604,7 +600,8 @@ func (c *ApiClient) genApiQuery(command string, detailsLevel string, containerKe
 	apiRes, err := c.apiCall(command, payload, c.sid, false, c.IsProxyUsed(), true)
 
 	if err != nil {
-		print(err.Error())
+		*err_output = err
+		return nil
 	}
 
 	var serverResponse []APIResponse
@@ -612,7 +609,9 @@ func (c *ApiClient) genApiQuery(command string, detailsLevel string, containerKe
 	for _, containerKey := range containerKeys {
 
 		if apiRes.data == nil {
-			print(containerKey)
+			// If data is nil, we should handle it gracefully or return an error
+			finished = true
+			break
 		}
 		_, ok := apiRes.data[containerKey]
 		if !ok {
@@ -625,8 +624,8 @@ func (c *ApiClient) genApiQuery(command string, detailsLevel string, containerKe
 
 	for !finished {
 		if !apiRes.Success {
-			print("FAILED!\n")
-			os.Exit(1)
+			*err_output = fmt.Errorf("API call failed: %s", apiRes.ErrorMsg)
+			return nil
 		}
 
 		totalObjects := apiRes.data["total"]
@@ -658,8 +657,7 @@ func (c *ApiClient) genApiQuery(command string, detailsLevel string, containerKe
 		apiRes, err = c.apiCall(command, payload, c.sid, false, c.IsProxyUsed(), true)
 
 		if err != nil {
-			print("Error communicating with server, please check your connection.")
-			*err_output = err
+			*err_output = fmt.Errorf("error communicating with server: %v", err)
 			return nil
 		}
 	}
@@ -707,7 +705,7 @@ func (c *ApiClient) waitForTask(taskId string) (APIResponse, error) {
 				}
 
 			} else {
-				fmt.Println("ERROR: Failed to handle asynchronous tasks as synchronous, tasks result is undefined ", taskResult)
+				return APIResponse{}, fmt.Errorf("failed to handle asynchronous tasks as synchronous, tasks result is undefined: %v", taskResult)
 			}
 
 		}
@@ -758,8 +756,8 @@ func (c *ApiClient) waitForTasks(taskObjects []interface{}) APIResponse {
 	taskRes, err := c.apiCall("show-task", payload, c.GetSessionID(), false, c.IsProxyUsed(), true)
 
 	if err != nil {
-		fmt.Println("Problem showing tasks, try again")
-
+		// Log to stderr instead of stdout, or return an empty response but this function doesn't return error
+		fmt.Fprintf(os.Stderr, "Problem showing tasks: %v\n", err)
 	}
 	checkTasksStatus(&taskRes)
 	return taskRes
